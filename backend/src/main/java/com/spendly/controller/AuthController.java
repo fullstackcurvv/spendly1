@@ -1,6 +1,7 @@
 package com.spendly.controller;
 
 import com.spendly.dto.AuthResponse;
+import com.spendly.dto.LoginRequest;
 import com.spendly.dto.RegisterRequest;
 import com.spendly.service.UserService;
 import jakarta.validation.Valid;
@@ -21,5 +22,10 @@ public class AuthController {
     @ResponseStatus(HttpStatus.CREATED)
     public AuthResponse register(@Valid @RequestBody RegisterRequest req) {
         return userService.register(req);
+    }
+
+    @PostMapping("/login")
+    public AuthResponse login(@Valid @RequestBody LoginRequest req) {
+        return userService.login(req);
     }
 }
