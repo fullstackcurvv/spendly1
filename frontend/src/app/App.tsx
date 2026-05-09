@@ -4,6 +4,10 @@ import { LandingPage } from './LandingPage'
 import { TermsPage } from './TermsPage'
 import { PrivacyPage } from './PrivacyPage'
 import { RegisterPage } from './RegisterPage'
+import { LoginPage } from './LoginPage'
+import { DashboardPage } from './DashboardPage'
+import { GuestRoute } from './GuestRoute'
+import { PrivateRoute } from './PrivateRoute'
 
 function getInitialTheme(): 'light' | 'dark' {
   const stored = localStorage.getItem('theme')
@@ -29,9 +33,9 @@ export default function App() {
           path="/"
           element={<LandingPage theme={theme} onToggleTheme={toggleTheme} />}
         />
-        {/* Placeholder routes — pages to be implemented */}
-        <Route path="/login" element={<div style={{ padding: '2rem' }}>Login page — coming soon</div>} />
-        <Route path="/register" element={<RegisterPage />} />
+        <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
+        <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
+        <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
         <Route path="/terms" element={<TermsPage theme={theme} onToggleTheme={toggleTheme} />} />
         <Route path="/policy" element={<PrivacyPage theme={theme} onToggleTheme={toggleTheme} />} />
       </Routes>
