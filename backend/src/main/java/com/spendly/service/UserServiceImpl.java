@@ -1,9 +1,11 @@
 package com.spendly.service;
 
 import com.spendly.dto.AuthResponse;
+import com.spendly.dto.LoginRequest;
 import com.spendly.dto.RegisterRequest;
 import com.spendly.dto.UserResponse;
 import com.spendly.exception.EmailAlreadyExistsException;
+import com.spendly.exception.InvalidCredentialsException;
 import com.spendly.model.User;
 import com.spendly.repository.UserRepository;
 import com.spendly.util.JwtUtil;
@@ -40,5 +42,18 @@ public class UserServiceImpl implements UserService {
         String token = jwtUtil.generateToken(saved.id());
         UserResponse userResponse = UserResponse.from(saved);
         return new AuthResponse(token, userResponse);
+    }
+
+    @Override
+    public AuthResponse login(LoginRequest req) {
+        User user = userRepository.findByEmail(req.email())
+                .orElseThrow(InvalidCredentialsException::new);
+
+        if (!passwordEncoder.matches(req.password(), user.passwordHash())) {
+            throw new InvalidCredentialsException();
+        }
+
+        String token = jwtUtil.generateToken(user.id());
+        return new AuthResponse(token, UserResponse.from(user));
     }
 }
