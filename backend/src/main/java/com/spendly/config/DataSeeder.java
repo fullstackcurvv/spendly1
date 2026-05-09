@@ -19,11 +19,13 @@ public class DataSeeder implements ApplicationRunner {
 
     private final UserRepository userRepository;
     private final ExpenseRepository expenseRepository;
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    public DataSeeder(UserRepository userRepository, ExpenseRepository expenseRepository) {
+    public DataSeeder(UserRepository userRepository, ExpenseRepository expenseRepository,
+                      BCryptPasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.expenseRepository = expenseRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
