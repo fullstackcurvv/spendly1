@@ -1,0 +1,6 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-brand-green: var(--brand-green);
+  --color-page-bg: var(--page-bg);
+}

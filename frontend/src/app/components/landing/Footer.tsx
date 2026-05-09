@@ -1,0 +1,32 @@
+import { SpendlyLogo } from './SpendlyLogo'
+
+export function Footer() {
+  return (
+    <footer
+      style={{
+        backgroundColor: 'var(--footer-bg)',
+        padding: '48px 24px',
+        textAlign: 'center',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          marginBottom: '12px',
+        }}
+      >
+        <SpendlyLogo variant="footer" />
+      </div>
+      <p
+        style={{
+          fontSize: '0.85rem',
+          color: 'var(--footer-text)',
+          marginTop: '8px',
+        }}
+      >
+        Track every rupee. Own your finances.
+      </p>
+    </footer>
+  )
+}
