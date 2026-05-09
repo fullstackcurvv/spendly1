@@ -6,6 +6,7 @@ import { PrivacyPage } from './PrivacyPage'
 import { RegisterPage } from './RegisterPage'
 import { LoginPage } from './LoginPage'
 import { DashboardPage } from './DashboardPage'
+import { ProfilePage } from './ProfilePage'
 import { GuestRoute } from './GuestRoute'
 import { PrivateRoute } from './PrivateRoute'
 
@@ -36,6 +37,7 @@ export default function App() {
         <Route path="/login" element={<GuestRoute><LoginPage /></GuestRoute>} />
         <Route path="/register" element={<GuestRoute><RegisterPage /></GuestRoute>} />
         <Route path="/dashboard" element={<PrivateRoute><DashboardPage /></PrivateRoute>} />
+        <Route path="/profile" element={<PrivateRoute><ProfilePage /></PrivateRoute>} />
         <Route path="/terms" element={<TermsPage theme={theme} onToggleTheme={toggleTheme} />} />
         <Route path="/policy" element={<PrivacyPage theme={theme} onToggleTheme={toggleTheme} />} />
       </Routes>

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router'
+import { Link, useNavigate } from 'react-router'
 
 interface StoredUser {
   id: string
@@ -59,15 +59,32 @@ export function DashboardPage() {
             {user.email}
           </p>
 
-          <button
-            onClick={handleLogout}
+          <Link
+            to="/profile"
             style={{
+              display: 'block',
               padding: '10px 24px',
               fontSize: '0.95rem',
               fontWeight: 600,
               color: 'var(--btn-primary-text)',
               backgroundColor: 'var(--btn-primary-bg)',
               border: 'none',
+              borderRadius: '8px',
+              textDecoration: 'none',
+              marginBottom: '12px',
+            }}
+          >
+            Profile
+          </Link>
+          <button
+            onClick={handleLogout}
+            style={{
+              padding: '10px 24px',
+              fontSize: '0.95rem',
+              fontWeight: 600,
+              color: 'var(--text-secondary)',
+              backgroundColor: 'transparent',
+              border: '1px solid var(--border)',
               borderRadius: '8px',
               cursor: 'pointer',
             }}
