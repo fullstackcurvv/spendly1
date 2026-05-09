@@ -1,11 +1,14 @@
 package com.spendly.service;
 
 import com.spendly.dto.AuthResponse;
+import com.spendly.dto.ChangePasswordRequest;
 import com.spendly.dto.LoginRequest;
 import com.spendly.dto.RegisterRequest;
+import com.spendly.dto.UpdateNameRequest;
 import com.spendly.dto.UserResponse;
 import com.spendly.exception.EmailAlreadyExistsException;
 import com.spendly.exception.InvalidCredentialsException;
+import com.spendly.exception.UserNotFoundException;
 import com.spendly.model.User;
 import com.spendly.repository.UserRepository;
 import com.spendly.util.JwtUtil;
@@ -55,5 +58,33 @@ public class UserServiceImpl implements UserService {
 
         String token = jwtUtil.generateToken(user.id());
         return new AuthResponse(token, UserResponse.from(user));
+    }
+
+    @Override
+    public UserResponse getProfile(String userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+        return UserResponse.from(user);
+    }
+
+    @Override
+    public UserResponse updateName(String userId, UpdateNameRequest req) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+        User updated = new User(user.id(), req.name(), user.email(), user.passwordHash(), user.createdAt());
+        User saved = userRepository.save(updated);
+        return UserResponse.from(saved);
+    }
+
+    @Override
+    public void changePassword(String userId, ChangePasswordRequest req) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(UserNotFoundException::new);
+        if (!passwordEncoder.matches(req.currentPassword(), user.passwordHash())) {
+            throw new InvalidCredentialsException();
+        }
+        String newHash = passwordEncoder.encode(req.newPassword());
+        User updated = new User(user.id(), user.name(), user.email(), newHash, user.createdAt());
+        userRepository.save(updated);
     }
 }
