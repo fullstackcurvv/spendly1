@@ -1,0 +1,39 @@
+:root {
+  --brand-green:      #2ca85a;
+  --page-bg:          #f8f6f4;
+  --page-bg-white:    #ffffff;
+  --text-primary:     #111111;
+  --text-secondary:   #555555;
+  --text-muted:       #888888;
+  --border:           rgba(0, 0, 0, 0.1);
+  --footer-bg:        #111111;
+  --footer-text:      #cccccc;
+  --card-bg:          #ffffff;
+  --badge-bg:         rgba(44, 168, 90, 0.1);
+  --badge-text:       #2ca85a;
+  --btn-primary-bg:   #111111;
+  --btn-primary-text: #ffffff;
+  --btn-ghost-border: rgba(0, 0, 0, 0.2);
+  --logo-icon:        #c8580a;
+
+  --cat-bills:        #2ca85a;
+  --cat-food:         #e8a020;
+  --cat-health:       #7b9fd4;
+  --cat-transport:    #9b7bc4;
+}
+
+[data-theme="dark"] {
+  --page-bg:          #0f0f0f;
+  --page-bg-white:    #1a1a1a;
+  --text-primary:     #f0f0f0;
+  --text-secondary:   #bbbbbb;
+  --text-muted:       #888888;
+  --border:           rgba(255, 255, 255, 0.1);
+  --footer-bg:        #000000;
+  --footer-text:      #999999;
+  --card-bg:          #1f1f1f;
+  --badge-bg:         rgba(44, 168, 90, 0.15);
+  --btn-primary-bg:   #f0f0f0;
+  --btn-primary-text: #111111;
+  --btn-ghost-border: rgba(255, 255, 255, 0.2);
+}

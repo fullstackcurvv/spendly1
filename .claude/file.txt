@@ -1,0 +1,12 @@
+
+
+
+------Plan mode - executing /.claude/specs/01-landing-page.md------
+How to activate plan mode:
+Either option 1) or option 2)
+1) shift+tab -> 2 times
+2) /plan
+
+Read .claude/specs/01-landing-page.md and create a detailed implementation 
+plan for the same. Do not write any code. 
+Save this plan to .claude/plans/01- landing-page-plan.md
