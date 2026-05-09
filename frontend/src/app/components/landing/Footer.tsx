@@ -27,6 +27,11 @@ export function Footer() {
       >
         Track every rupee. Own your finances.
       </p>
+      <p style={{ marginTop: '12px', fontSize: '0.8rem' }}>
+        <a href="#" style={{ color: 'var(--footer-text)' }}>Terms and Conditions</a>
+        {' · '}
+        <a href="#" style={{ color: 'var(--footer-text)' }}>Privacy Policy</a>
+      </p>
     </footer>
   )
 }

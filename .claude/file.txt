@@ -1,6 +1,4 @@
 
-
-
 ------Plan mode - executing /.claude/specs/01-landing-page.md------
 How to activate plan mode:
 Either option 1) or option 2)
@@ -10,3 +8,15 @@ Either option 1) or option 2)
 Read .claude/specs/01-landing-page.md and create a detailed implementation 
 plan for the same. Do not write any code. 
 Save this plan to .claude/plans/01- landing-page-plan.md
+
+-------Landing-page-improvements-----------------------
+----1) Add two links to the footer---------------------
+Add two links to the footer in @src/app/App.tsx:
+
+- "Terms and Conditions"
+- "Privacy Policy"
+
+Both should be plain text links, no special styling needed for now.
+Point both to "#" as placeholder hrefs since the pages don't exist yet.
+
+Do not modify anything else on the page.
