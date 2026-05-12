@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import { Link, useNavigate } from 'react-router'
 import axios from 'axios'
 import api from '../lib/api'
@@ -58,6 +58,15 @@ function getInitials(name: string): string {
   return name.split(' ').filter(Boolean).map(w => w[0].toUpperCase()).join('').slice(0, 2)
 }
 
+type Preset = 'all' | 'thisMonth' | 'last3' | 'last6' | 'custom'
+
+const PRESETS: Array<{ key: Exclude<Preset, 'custom'>; label: string }> = [
+  { key: 'all',       label: 'All Time'      },
+  { key: 'thisMonth', label: 'This Month'    },
+  { key: 'last3',     label: 'Last 3 Months' },
+  { key: 'last6',     label: 'Last 6 Months' },
+]
+
 const card: React.CSSProperties = {
   backgroundColor: 'var(--card-bg)',
   border: '1px solid var(--border)',
@@ -85,7 +94,12 @@ export function DashboardPage() {
   const navigate = useNavigate()
   const [profile, setProfile] = useState<ProfileData | null>(null)
   const [expenses, setExpenses] = useState<ExpenseResponse[]>([])
-  const [summary, setSummary] = useState<CategorySummary[]>([])
+
+  const [activePreset, setActivePreset] = useState<Preset>('all')
+  const [fromDate, setFromDate] = useState('')
+  const [toDate, setToDate] = useState('')
+  const [appliedFrom, setAppliedFrom] = useState('')
+  const [appliedTo, setAppliedTo] = useState('')
 
   useEffect(() => {
     const onAuthError = (err: unknown) => {
@@ -97,10 +111,43 @@ export function DashboardPage() {
 
     api.get('/users/me').then(r => setProfile(r.data)).catch(onAuthError)
     api.get('/expenses').then(r => setExpenses(r.data)).catch(onAuthError)
-    api.get('/expenses/summary').then(r => setSummary(
-      [...r.data].sort((a: CategorySummary, b: CategorySummary) => b.total - a.total)
-    )).catch(onAuthError)
   }, [navigate])
+
+  const filteredExpenses = useMemo(() => {
+    if (activePreset === 'all') return expenses
+    const today = new Date()
+    today.setHours(0, 0, 0, 0)
+    if (activePreset === 'thisMonth') {
+      const from = new Date(today.getFullYear(), today.getMonth(), 1)
+      return expenses.filter(e => new Date(e.date) >= from)
+    }
+    if (activePreset === 'last3') {
+      const from = new Date(today)
+      from.setMonth(from.getMonth() - 3)
+      return expenses.filter(e => new Date(e.date) >= from)
+    }
+    if (activePreset === 'last6') {
+      const from = new Date(today)
+      from.setMonth(from.getMonth() - 6)
+      return expenses.filter(e => new Date(e.date) >= from)
+    }
+    return expenses.filter(e => {
+      const d = new Date(e.date)
+      if (appliedFrom && d < new Date(appliedFrom)) return false
+      if (appliedTo && d > new Date(appliedTo)) return false
+      return true
+    })
+  }, [expenses, activePreset, appliedFrom, appliedTo])
+
+  const filteredSummary = useMemo<CategorySummary[]>(() => {
+    const map: Record<string, number> = {}
+    filteredExpenses.forEach(e => {
+      map[e.category] = (map[e.category] ?? 0) + e.amount
+    })
+    return Object.entries(map)
+      .map(([category, total]) => ({ category, total }))
+      .sort((a, b) => b.total - a.total)
+  }, [filteredExpenses])
 
   function handleLogout() {
     localStorage.removeItem('token')
@@ -108,8 +155,8 @@ export function DashboardPage() {
     navigate('/login')
   }
 
-  const totalSpent = expenses.reduce((s, e) => s + e.amount, 0)
-  const topCategory = summary[0]?.category as Category | undefined
+  const totalSpent = filteredExpenses.reduce((s, e) => s + e.amount, 0)
+  const topCategory = filteredSummary[0]?.category as Category | undefined
 
   return (
     <div style={{ minHeight: '100vh', backgroundColor: 'var(--page-bg)', display: 'flex', flexDirection: 'column' }}>
@@ -193,6 +240,92 @@ export function DashboardPage() {
           </div>
         </div>
 
+        {/* Filter bar */}
+        <div style={{
+          ...card,
+          display: 'flex',
+          alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: '8px',
+          marginBottom: '20px',
+          padding: '12px 20px',
+        }}>
+          {PRESETS.map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={() => {
+                setActivePreset(key)
+                setFromDate('')
+                setToDate('')
+                setAppliedFrom('')
+                setAppliedTo('')
+              }}
+              style={{
+                padding: '6px 14px',
+                borderRadius: '100px',
+                border: activePreset === key ? 'none' : '1px solid var(--border)',
+                backgroundColor: activePreset === key ? '#166534' : 'transparent',
+                color: activePreset === key ? '#ffffff' : 'var(--text-primary)',
+                fontSize: '0.85rem',
+                fontWeight: activePreset === key ? 600 : 400,
+                cursor: 'pointer',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {label}
+            </button>
+          ))}
+          <input
+            type="date"
+            value={fromDate}
+            onChange={e => setFromDate(e.target.value)}
+            style={{
+              marginLeft: '8px',
+              padding: '5px 8px',
+              borderRadius: '6px',
+              border: '1px solid var(--border)',
+              fontSize: '0.85rem',
+              color: 'var(--text-primary)',
+              backgroundColor: 'var(--card-bg)',
+              outline: 'none',
+            }}
+          />
+          <span style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>to</span>
+          <input
+            type="date"
+            value={toDate}
+            onChange={e => setToDate(e.target.value)}
+            style={{
+              padding: '5px 8px',
+              borderRadius: '6px',
+              border: '1px solid var(--border)',
+              fontSize: '0.85rem',
+              color: 'var(--text-primary)',
+              backgroundColor: 'var(--card-bg)',
+              outline: 'none',
+            }}
+          />
+          <button
+            onClick={() => {
+              setActivePreset('custom')
+              setAppliedFrom(fromDate)
+              setAppliedTo(toDate)
+            }}
+            style={{
+              padding: '6px 16px',
+              borderRadius: '6px',
+              border: 'none',
+              backgroundColor: '#166534',
+              color: '#ffffff',
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+            }}
+          >
+            Apply
+          </button>
+        </div>
+
         {/* Stats row */}
         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px', marginBottom: '20px' }}>
           <div style={{ ...card, padding: '20px 24px' }}>
@@ -201,7 +334,7 @@ export function DashboardPage() {
           </div>
           <div style={{ ...card, padding: '20px 24px' }}>
             <p style={statLabel}>TRANSACTIONS</p>
-            <p style={statValue}>{expenses.length}</p>
+            <p style={statValue}>{filteredExpenses.length}</p>
           </div>
           <div style={{ ...card, padding: '20px 24px' }}>
             <p style={statLabel}>TOP CATEGORY</p>
@@ -237,9 +370,9 @@ export function DashboardPage() {
                 </tr>
               </thead>
               <tbody>
-                {expenses.map((expense, i) => {
+                {filteredExpenses.map((expense, i) => {
                   const cat = CAT[expense.category]
-                  const isLast = i === expenses.length - 1
+                  const isLast = i === filteredExpenses.length - 1
                   const rowBorder = isLast ? undefined : '1px solid var(--border)'
                   return (
                     <tr key={expense.id}>
@@ -283,7 +416,7 @@ export function DashboardPage() {
               By Category
             </h2>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              {summary.map(({ category, total }) => {
+              {filteredSummary.map(({ category, total }) => {
                 const cat = CAT[category as Category]
                 const label = cat?.label ?? category
                 const line = cat?.line ?? '#9ca3af'

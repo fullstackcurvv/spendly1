@@ -133,3 +133,13 @@ Either option 1) or option 2)
 Read .claude/specs/04-login-and-logout.md and create a detailed implementation 
 plan for the same. Do not write any code.
 Save this plan to .claude/plans/04-login-and-logout-plan.md
+
+------Plan Mode for 08-ci-and-cd--------------
+How to activate plan mode:
+Either option 1) or option 2)
+1) shift+tab -> 2 times
+2) /plan
+
+Read .claude/specs/08-cicd-and-production-deployment.md and create a detailed implementation 
+plan for the same. Do not write any code.
+Save this plan to .claude/plans/08-cicd-and-production-deployment-plan.md
