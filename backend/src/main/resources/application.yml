@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: mongodb
+    active: ${SPRING_PROFILES_ACTIVE:mongodb}
 
 server:
   port: 8080
@@ -8,5 +8,5 @@ server:
     context-path: /api
 
 jwt:
-  secret: c3BlbmRseS1zZWNyZXQta2V5LWZvci1qd3QtdG9rZW4tZ2VuZXJhdGlvbi0yMDI1LWRldg==
-  expiration-ms: 86400000
+  secret: ${JWT_SECRET:c3BlbmRseS1zZWNyZXQta2V5LWZvci1qd3QtdG9rZW4tZ2VuZXJhdGlvbi0yMDI1LWRldg==}
+  expiration-ms: ${JWT_EXPIRATION:86400000}
