@@ -105,7 +105,11 @@ export function DashboardPage() {
     const onAuthError = (err: unknown) => {
       if (axios.isAxiosError(err)) {
         const s = err.response?.status
-        if (s === 401 || s === 403) navigate('/login')
+        if (s === 401 || s === 403) {
+          localStorage.removeItem('token')
+          localStorage.removeItem('user')
+          navigate('/login')
+        }
       }
     }
 
